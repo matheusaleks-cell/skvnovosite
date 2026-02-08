@@ -40,6 +40,30 @@ foreach ($file in $files) {
                     $products[$numericCode].candidateNames += $possibleName
                 }
             }
+            
+            # Simple Categorization based on filename keywords
+            $lowerFile = $file.ToLower()
+            if ($lowerFile -match "copo|caneca|garrafa|squeeze|jarra|termica|cantil") {
+                $products[$numericCode].subcategory = "Bebidas"
+            }
+            elseif ($lowerFile -match "caneta|lapis|marcar|escrita|bloco|caderno|agenda|pasta") {
+                $products[$numericCode].subcategory = "Escrit$([char]0x00F3)rio" # Escritório
+            }
+            elseif ($lowerFile -match "mochila|bolsa|necessaire|sacola|mala|pochete") {
+                $products[$numericCode].subcategory = "Bolsas e Mochilas"
+            }
+            elseif ($lowerFile -match "chaveiro|cordao|botton|pin") {
+                $products[$numericCode].subcategory = "Chaveiros e Acess$([char]0x00F3)rios" # Acessórios
+            }
+            elseif ($lowerFile -match "tecno|usb|power|carregador|fone|mouse|som|caixa") {
+                $products[$numericCode].subcategory = "Tecnologia"
+            }
+            elseif ($lowerFile -match "bone|camisa|camiseta|vestuario|textil|uniforme") {
+                $products[$numericCode].subcategory = "T$([char]0x00EA)xtil" # Têxtil
+            }
+            elseif ($lowerFile -match "casa|cozinha|ferramenta|kit|vinho|churrasco") {
+                $products[$numericCode].subcategory = "Casa e Gourmet"
+            }
         }
     }
 }
@@ -77,15 +101,22 @@ foreach ($key in $products.Keys) {
     }, { $_.Length } -Descending
 
     $finalProducts += [PSCustomObject]@{
-        id       = $p.id
-        title    = $finalTitle
-        images   = $sortedImages
-        category = $p.category
+        id          = $p.id
+        title       = $finalTitle
+        images      = $sortedImages
+        category    = $p.category
+        subcategory = if ($p.subcategory) { $p.subcategory } else { "Outros" }
     }
 }
 
 $count = $finalProducts.Count
 Write-Host "Generated $count products."
 
-$finalProducts | ConvertTo-Json -Depth 4 | Out-File -Encoding utf8 "src/brindes.json"
-Write-Host "JSON saved to src/brindes.json"
+# Force UTF-8 encoding for Output
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+$jsonContent = $finalProducts | ConvertTo-Json -Depth 4
+[System.IO.File]::WriteAllText("$PSScriptRoot/src/brindes.json", $jsonContent, [System.Text.Encoding]::UTF8)
+
+Write-Host "JSON saved to src/brindes.json with UTF-8 encoding."

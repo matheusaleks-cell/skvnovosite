@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Search } from 'lucide-react';
 import './BrindesCatalog.css';
 
 // We will load this data dynamically or from a separate file
@@ -7,20 +8,42 @@ import brindesData from '../brindes.json';
 const BrindesCatalog = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [visibleCount, setVisibleCount] = useState(24);
+    const [selectedCategory, setSelectedCategory] = useState('Todos');
     const [selectedProduct, setSelectedProduct] = useState(null);
 
-    // Robust data loading: handle array (production) or object wrapper (debug/PowerShell)
-    const products = Array.isArray(brindesData) ? brindesData : (brindesData.value || []);
+    // Robust data loading
+    const products = useMemo(() => {
+        console.log("Brindes Data Raw:", brindesData);
+        if (Array.isArray(brindesData)) return brindesData;
+        if (brindesData && brindesData.value) return brindesData.value;
+        return [];
+    }, []);
 
-    // Filter products based on search
+    console.log("Parsed Products:", products.length);
+
+    // Get unique categories
+    const categories = useMemo(() => {
+        const cats = new Set(products.map(p => p.subcategory || 'Outros'));
+        return ['Todos', ...Array.from(cats).sort()];
+    }, [products]);
+
+    // Filter products based on search and category
     const filteredProducts = useMemo(() => {
-        if (!searchTerm) return products;
-        const lowerTerm = searchTerm.toLowerCase();
-        return products.filter(product =>
-            product.title.toLowerCase().includes(lowerTerm) ||
-            product.id.toString().includes(lowerTerm)
-        );
-    }, [searchTerm, products]);
+        let result = products;
+
+        if (selectedCategory !== 'Todos') {
+            result = result.filter(p => (p.subcategory || 'Outros') === selectedCategory);
+        }
+
+        if (searchTerm) {
+            const lowerTerm = searchTerm.toLowerCase();
+            result = result.filter(product =>
+                product.title.toLowerCase().includes(lowerTerm) ||
+                product.id.toString().includes(lowerTerm)
+            );
+        }
+        return result;
+    }, [searchTerm, selectedCategory, products]);
 
     // Pagination (Simple load more)
     const showMore = () => setVisibleCount(prev => prev + 24);
@@ -28,40 +51,64 @@ const BrindesCatalog = () => {
     return (
         <div className="brindes-catalog">
             <div className="catalog-controls">
-                <input
-                    type="text"
-                    placeholder="Buscar por código..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="catalog-search"
-                />
+                <div className="catalog-categories">
+                    {categories.map(cat => (
+                        <button
+                            key={cat}
+                            className={`category-pill ${selectedCategory === cat ? 'active' : ''}`}
+                            onClick={() => {
+                                setSelectedCategory(cat);
+                                setVisibleCount(24); // Reset pagination
+                            }}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+                <div className="catalog-search-wrapper">
+                    <Search className="search-icon" size={20} />
+                    <input
+                        type="text"
+                        placeholder="Buscar por código ou nome..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="catalog-search"
+                    />
+                </div>
             </div>
 
-            <div className="catalog-grid">
-                {filteredProducts.slice(0, visibleCount).map(product => (
-                    <div
-                        key={product.id}
-                        className="catalog-item"
-                        onClick={() => setSelectedProduct(product)}
-                    >
-                        <div className="catalog-img-wrapper">
-                            <img
-                                src={product.images[0]}
-                                alt={product.title}
-                                loading="lazy"
-                            />
-                            {product.images.length > 1 && (
-                                <span className="variant-badge">+{product.images.length - 1}</span>
-                            )}
+            {products.length === 0 ? (
+                <div className="no-products">
+                    <h3>Carregando catálogo...</h3>
+                    <p>Se demorar, recarregue a página.</p>
+                </div>
+            ) : (
+                <div className="catalog-grid">
+                    {filteredProducts.slice(0, visibleCount).map(product => (
+                        <div
+                            key={product.id}
+                            className="catalog-item"
+                            onClick={() => setSelectedProduct(product)}
+                        >
+                            <div className="catalog-img-wrapper">
+                                <img
+                                    src={product.images[0]}
+                                    alt={product.title}
+                                    loading="lazy"
+                                />
+                                {product.images.length > 1 && (
+                                    <span className="variant-badge">+{product.images.length - 1}</span>
+                                )}
+                            </div>
+                            <div className="catalog-info">
+                                <span className="product-code">{product.title.replace(/ \d{4,}$/, '')}</span>
+                            </div>
                         </div>
-                        <div className="catalog-info">
-                            <span className="product-code">{product.title.replace(/ \d{4,}$/, '')}</span>
-                        </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            )}
 
-            {visibleCount < filteredProducts.length && (
+            {products.length > 0 && visibleCount < filteredProducts.length && (
                 <button onClick={showMore} className="btn btn-outline btn-load-more">
                     Carregar Mais
                 </button>
