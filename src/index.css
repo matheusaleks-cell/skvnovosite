@@ -1,0 +1,314 @@
+:root {
+    /* Brand Colors - Industrial & Authoritative */
+    --primary: #FF6600;
+    --primary-hover: #E65C00;
+    --primary-light: #FFF0E6;
+
+    /* Neutral Scale - Engineered Cleanliness */
+    --bg-main: #FFFFFF;
+    --bg-secondary: #F8F9FA;
+    /* Cool Gray 50 */
+    --bg-surface: #FFFFFF;
+    --bg-element: #EDF2F7;
+    /* Cool Gray 100 */
+
+    --border-color: #E2E8F0;
+    /* Cool Gray 200 */
+    --border-hover: #CBD5E0;
+
+    /* Text Colors - High Contrast Legibility */
+    --text-main: #1A202C;
+    /* Cool Gray 900 */
+    --text-secondary: #4A5568;
+    /* Cool Gray 700 */
+    --text-light: #718096;
+    /* Cool Gray 500 */
+    --text-inverse: #FFFFFF;
+
+    /* Spacing - "Executive Breathing Room" */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 2rem;
+    --space-lg: 4rem;
+    --space-xl: 8rem;
+
+    /* Container - Standardized Enterprise Width */
+    --container-width: 1280px;
+
+    /* UI Finishes - "Premium Hardware" Feel */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    /* Modern Soft Squircle */
+    --radius-pill: 9999px;
+
+    /* Shadows - "Director Level" Depth (Layered, diffused, premium) */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    --shadow-float: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Animations - "Industrial Motion" */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 30px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* --- Global Scroll Animations --- */
+.animate-on-scroll {
+    opacity: 0;
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    will-change: opacity, transform;
+}
+
+.animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* Animation Variants */
+.fade-up {
+    transform: translateY(30px);
+}
+
+.fade-in {
+    /* Just opacity transition handled by base class */
+}
+
+.scale-in {
+    transform: scale(0.95);
+    opacity: 0;
+}
+
+.slide-in-left {
+    transform: translateX(-30px);
+}
+
+.slide-in-right {
+    transform: translateX(30px);
+}
+
+/* Stagger Delays */
+.delay-100 {
+    transition-delay: 0.1s;
+}
+
+.delay-200 {
+    transition-delay: 0.2s;
+}
+
+.delay-300 {
+    transition-delay: 0.3s;
+}
+
+.delay-400 {
+    transition-delay: 0.4s;
+}
+
+.delay-500 {
+    transition-delay: 0.5s;
+}
+
+.delay-600 {
+    transition-delay: 0.6s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.7;
+    /* Increased for better readability */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+/* Typography Utilities - Corporate Precision */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.heading-pro {
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-main);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    /* Tighter corporate tracking */
+    text-wrap: balance;
+    /* Branding balance */
+}
+
+h1 {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+h2 {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+h3 {
+    font-weight: 600;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary) 0%, #FF8533 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-lead {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-weight: 400;
+}
+
+/* Layout Utilities */
+.container {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 var(--space-sm);
+}
+
+/* Buttons - "Tactile Action" */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: 0 4px 6px rgba(255, 102, 0, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 14px rgba(255, 102, 0, 0.25);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-outline {
+    background: transparent;
+    border-color: var(--border-color);
+    color: var(--text-main);
+}
+
+.btn-outline:hover {
+    border-color: var(--text-main);
+    background: var(--bg-secondary);
+}
+
+/* Utils */
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* Selection */
+::selection {
+    background: rgba(255, 102, 0, 0.2);
+    color: var(--text-main);
+}
+
+/* Global Quote Button (Green) */
+.btn-quote {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #5cb85c;
+    /* Green color from reference */
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 1rem 2rem;
+    border-radius: var(--radius-sm);
+    /* Slightly rounded */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px rgba(92, 184, 92, 0.2);
+}
+
+.btn-quote:hover {
+    background-color: #4cae4c;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 14px rgba(92, 184, 92, 0.25);
+}

@@ -1,0 +1,238 @@
+/* SKV TECHNICAL SPEC SHEET - PRODUCT DETAIL */
+
+.product-detail-page {
+    background: var(--bg-main);
+    padding-bottom: var(--space-xl);
+}
+
+/* --- Breadcrumbs: Engineering Path --- */
+.breadcrumbs {
+    padding: 1.5rem 0;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    font-family: 'Inter', monospace;
+    /* Tech feel */
+}
+
+.breadcrumb-link {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: color 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.breadcrumb-link:hover {
+    color: var(--text-main);
+}
+
+.breadcrumb-link:last-child {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+
+/* --- Spec Sheet Layout --- */
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    align-items: start;
+    animation: fadeIn 0.5s ease;
+}
+
+@media (min-width: 1024px) {
+    .detail-grid {
+        grid-template-columns: 1.25fr 0.75fr;
+        /* Wide image, compact info */
+        gap: 5rem;
+    }
+}
+
+
+/* --- Visual Evidence (Image) --- */
+.detail-image-wrapper {
+    background: var(--bg-element);
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    /* Frame effect */
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.detail-image {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    display: block;
+    background: white;
+    transition: transform 0.3s ease;
+}
+
+.detail-image:hover {
+    transform: scale(1.02);
+}
+
+
+/* --- Technical Data (Content) --- */
+/* --- Technical Data (Content) --- */
+/* --- Technical Data (Content) --- */
+.detail-content {
+    /* Stack naturally on mobile */
+    position: relative;
+    top: 0;
+}
+
+@media (min-width: 1024px) {
+    .detail-content {
+        /* Sticky on desktop for spec sheet feel */
+        position: sticky;
+        top: 120px;
+    }
+}
+
+.detail-info-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-meta-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.meta-label {
+    font-weight: 700;
+    color: var(--text-main);
+    min-width: 80px;
+}
+
+.meta-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.meta-link:hover {
+    text-decoration: underline;
+}
+
+.meta-tags {
+    color: var(--primary);
+    font-weight: 400;
+}
+
+.detail-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    line-height: 1.1;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+}
+
+.detail-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+}
+
+/* --- Action Module --- */
+.detail-cta-box {
+    margin-bottom: 3rem;
+}
+
+.btn-quote {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #5cb85c;
+    /* Green color from reference */
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    /* Slightly rounded, almost square like reference */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    width: 100%;
+    max-width: 300px;
+}
+
+.btn-quote:hover {
+    background-color: #4cae4c;
+}
+
+/* --- Trust Badges --- */
+.trust-badges {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.trust-icon-box {
+    color: var(--primary);
+    /* Use brand blue/primary for icons */
+}
+
+.trust-icon {
+    width: 40px;
+    height: 40px;
+    stroke-width: 1.5;
+}
+
+.trust-text {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+    max-width: 150px;
+}
+
+
+/* --- Related Items --- */
+.related-section {
+    margin-top: 6rem;
+    padding-top: 4rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-surface);
+}
+
+.related-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.related-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding-bottom: 4rem;
+}

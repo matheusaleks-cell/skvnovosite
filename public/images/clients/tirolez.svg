@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-weight: bold; font-size: 40px; fill: #E30613; }
+      .bg { fill: #FFDE00; }
+      .border { fill: none; stroke: #E30613; stroke-width: 2; }
+    </style>
+  </defs>
+  <!-- Simple representation of Tirolez logo style -->
+  <path d="M10,10 Q100,0 190,10 L190,50 Q100,60 10,50 Z" class="bg" />
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" class="text" dy="2">TIROLEZ</text>
+  <path d="M10,10 Q100,0 190,10 L190,50 Q100,60 10,50 Z" class="border" />
+</svg>

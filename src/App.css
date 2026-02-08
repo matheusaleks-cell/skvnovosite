@@ -1,0 +1,16 @@
+/* Main Layout Structure */
+#root {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-main {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+    /* Height of the new fixed header */
+}
