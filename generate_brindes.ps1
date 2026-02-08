@@ -4,18 +4,24 @@ $products = @{}
 Write-Host "Scanning $($files.Count) files from directory..."
 
 foreach ($file in $files) {
-    # Skip logos
-    if ($file -match "logo" -or $file -match "icon") { continue }
+    # Skip logos/banners
+    if ($file -match "logo" -or $file -match "icon" -or $file -match "banner") { continue }
 
     $numericCode = $null
     $rawCode = $null
 
     # Pattern 1: Starts with ID (e.g. 01323-Mochila...)
-    if ($file -match "^(\d+)-") {
+    if ($file -match "^(\d{3,})-") {
         $rawCode = $matches[1]
         $numericCode = $rawCode
     }
-    # Pattern 2: ID embedded at end (e.g. brindes_...-25795-1762784227.jpg)
+    # Pattern 2: p_Code or home-Code prefixes
+    elseif ($file -match "^(p_|home-)(\d{3,}[a-z]?)-") {
+        $rawCode = $matches[2]
+        $numericCode = $rawCode
+    }
+    # Pattern 3: ID embedded at end with timestamp (standard NEW format)
+    # brindes_Category-Description-ID-Timestamp.jpg
     elseif ($file -match "-(\d{4,6})-\d{9,}.*\.(jpg|png|jpeg)$") {
         $numericCode = $matches[1]
         $rawCode = $numericCode
@@ -39,23 +45,34 @@ foreach ($file in $files) {
             $products[$numericCode].images += $imagePath
         }
 
-        # Attempt to extract a product name from the filename
-        # Pattern 1 matches: CODE-Description-Numbers.ext
+        # --- NAME EXTRACTION ---
+        
+        # Pattern 1: CODE-Description-Numbers.ext
         if ($file -match "^$rawCode-(.+?)((-|\.|_)\d+)?\.(jpg|png|jpeg)$") {
             $possibleName = $matches[1]
             if ($possibleName -notmatch "^(azul|verde|vermelho|amarelo|preto|branco|rosa|bege|cinza|prata|dourado|laranja|roxo|lilas|marrom|transparente|[0-9]+|d\d+)$") {
                 $products[$numericCode].candidateNames += $possibleName
             }
         }
-        # Pattern 2 matches: brindes_Category-Description-ID-Timestamp.jpg
-        elseif ($file -match "brindes_.*-(.+?)-$numericCode-\d+") {
+        # Pattern 2: brindes_Category-Description-ID-Timestamp.jpg
+        # We assume category does NOT have hyphens, or we match greedily until the ID.
+        # Best approach: Match string BETWEEN the first hyphen (after prefix) and the ID.
+        elseif ($file -match "brindes_[^-]+-(.+?)-$numericCode-\d+") {
             $possibleName = $matches[1]
             if ($possibleName -notmatch "^(azul|verde|vermelho|amarelo|preto|branco|rosa|bege|cinza|prata|dourado|laranja|roxo|lilas|marrom|transparente|[0-9]+|d\d+)$") {
                 $products[$numericCode].candidateNames += $possibleName
             }
         }
+        # Pattern 3: Fallback for p_Code-Name or home-Code-Name
+        elseif ($file -match "^(p_|home-)$rawCode-(.+?)((-|\.|_)\d+)?\.(jpg|png|jpeg)$") {
+            $possibleName = $matches[2]
+            if ($possibleName -notmatch "^(azul|verde|vermelho|amarelo|preto|branco|rosa|bege|cinza|prata|dourado|laranja|roxo|lilas|marrom|transparente|[0-9]+|d\d+)$") {
+                $products[$numericCode].candidateNames += $possibleName
+            }
+        }
+
         
-        # Simple Categorization based on filename keywords
+        # --- CATEGORIZATION ---
         $lowerFile = $file.ToLower()
         if ($lowerFile -match "copo|caneca|garrafa|squeeze|jarra|termica|cantil|taca|xicara") {
             $products[$numericCode].subcategory = "Bebidas"
