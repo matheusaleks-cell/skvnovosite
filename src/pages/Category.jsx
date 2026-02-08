@@ -39,7 +39,7 @@ const Category = () => {
         '/campanhas-politicas': {
             name: 'Campanhas Políticas',
             title: <><span className="text-highlight">Visibilidade total</span> para sua campanha eleitoral.</>,
-            desc: 'Material completo para sua campanha: santinhos, praguinhas, bandeiras, adesivos de para-choque e muito mais. Garantimos rapidez na produção para acompanhar o ritmo da eleição.',
+            desc: 'Material completo para sua campanha: WindBanner, Bandeiras, Adesivo perfurado, Santinhos, Praguinhas, Adesivo Para-choque e muito mais. Garantimos rapidez na produção para acompanhar o ritmo da eleição.',
             heroImage: '/images/products/politico-carousel.png?v=2', // Matched with Carousel
             heroAlt: 'Campanhas Políticas',
             list: [

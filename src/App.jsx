@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Category from './pages/Category';
 import ProductDetail from './pages/ProductDetail';
+import WhatsAppButton from './components/WhatsAppButton';
 import './App.css';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/produtos" element={<Category />} />
           <Route path="/produto/:slug" element={<ProductDetail />} />
         </Routes>
+        <WhatsAppButton />
       </Layout>
     </Router>
   );

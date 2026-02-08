@@ -21,6 +21,8 @@ const Header = () => {
         { name: 'Início', path: '/' },
         { name: 'Sobre', path: '/sobre' },
         { name: 'Comunicação Visual', path: '/comunicacao-visual' },
+        { name: 'Materiais Políticos', path: '/campanhas-politicas' },
+        { name: 'Brindes', path: '/brindes' },
         { name: 'Confecção', path: '/confeccao' },
     ];
 
