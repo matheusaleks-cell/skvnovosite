@@ -1,69 +1,85 @@
-$files = Get-Content "files.txt" -Encoding UTF8
+$files = Get-ChildItem "$PSScriptRoot/public/images/products/brindes" -File | Select-Object -ExpandProperty Name
 $products = @{}
 
-Write-Host "Processing $($files.Count) files..."
+Write-Host "Scanning $($files.Count) files from directory..."
 
 foreach ($file in $files) {
-    if ($file -match "^([a-zA-Z0-9]+)-") {
+    # Skip logos
+    if ($file -match "logo" -or $file -match "icon") { continue }
+
+    $numericCode = $null
+    $rawCode = $null
+
+    # Pattern 1: Starts with ID (e.g. 01323-Mochila...)
+    if ($file -match "^(\d+)-") {
         $rawCode = $matches[1]
-        $numericCode = $rawCode -replace "\D", ""
-        
-        if ($numericCode.Length -lt 3) { 
-            $numericCode = $rawCode 
-        }
+        $numericCode = $rawCode
+    }
+    # Pattern 2: ID embedded at end (e.g. brindes_...-25795-1762784227.jpg)
+    elseif ($file -match "-(\d{4,6})-\d{9,}.*\.(jpg|png|jpeg)$") {
+        $numericCode = $matches[1]
+        $rawCode = $numericCode
+    }
+    
+    if ($null -ne $numericCode) {
         
         # Construct the image path
         $imagePath = "/images/products/brindes/$file"
 
-        # Filter out logo images
-        if ($file -notmatch "logo") {
-            if (-not $products.ContainsKey($numericCode)) {
-                $products[$numericCode] = @{
-                    id             = $numericCode
-                    title          = "Cod. $numericCode"
-                    category       = "Brindes"
-                    images         = @( $imagePath )
-                    candidateNames = @()
-                }
+        if (-not $products.ContainsKey($numericCode)) {
+            $products[$numericCode] = @{
+                id             = $numericCode
+                title          = "Cod. $numericCode"
+                category       = "Brindes"
+                images         = @( $imagePath )
+                candidateNames = @()
             }
-            else {
-                $products[$numericCode].images += $imagePath
-            }
+        }
+        else {
+            $products[$numericCode].images += $imagePath
+        }
 
-            # Attempt to extract a product name from the filename
-            # Format often matches: CODE-Description-Numbers.ext or CODE-Description.ext
-            # We want to capture "Description"
-            if ($file -match "^$rawCode-(.+?)((-|\.|_)\d+)?\.(jpg|png|jpeg)$") {
-                $possibleName = $matches[1]
-                # Filter out likely color variants or garbage
-                if ($possibleName -notmatch "^(azul|verde|vermelho|amarelo|preto|branco|rosa|bege|cinza|prata|dourado|laranja|roxo|lilas|marrom|transparente|[0-9]+|d\d+)$") {
-                    $products[$numericCode].candidateNames += $possibleName
-                }
+        # Attempt to extract a product name from the filename
+        # Pattern 1 matches: CODE-Description-Numbers.ext
+        if ($file -match "^$rawCode-(.+?)((-|\.|_)\d+)?\.(jpg|png|jpeg)$") {
+            $possibleName = $matches[1]
+            if ($possibleName -notmatch "^(azul|verde|vermelho|amarelo|preto|branco|rosa|bege|cinza|prata|dourado|laranja|roxo|lilas|marrom|transparente|[0-9]+|d\d+)$") {
+                $products[$numericCode].candidateNames += $possibleName
             }
-            
-            # Simple Categorization based on filename keywords
-            $lowerFile = $file.ToLower()
-            if ($lowerFile -match "copo|caneca|garrafa|squeeze|jarra|termica|cantil") {
-                $products[$numericCode].subcategory = "Bebidas"
+        }
+        # Pattern 2 matches: brindes_Category-Description-ID-Timestamp.jpg
+        elseif ($file -match "brindes_.*-(.+?)-$numericCode-\d+") {
+            $possibleName = $matches[1]
+            if ($possibleName -notmatch "^(azul|verde|vermelho|amarelo|preto|branco|rosa|bege|cinza|prata|dourado|laranja|roxo|lilas|marrom|transparente|[0-9]+|d\d+)$") {
+                $products[$numericCode].candidateNames += $possibleName
             }
-            elseif ($lowerFile -match "caneta|lapis|marcar|escrita|bloco|caderno|agenda|pasta") {
-                $products[$numericCode].subcategory = "Escrit$([char]0x00F3)rio" # Escritório
-            }
-            elseif ($lowerFile -match "mochila|bolsa|necessaire|sacola|mala|pochete") {
-                $products[$numericCode].subcategory = "Bolsas e Mochilas"
-            }
-            elseif ($lowerFile -match "chaveiro|cordao|botton|pin") {
-                $products[$numericCode].subcategory = "Chaveiros e Acess$([char]0x00F3)rios" # Acessórios
-            }
-            elseif ($lowerFile -match "tecno|usb|power|carregador|fone|mouse|som|caixa") {
-                $products[$numericCode].subcategory = "Tecnologia"
-            }
-            elseif ($lowerFile -match "bone|camisa|camiseta|vestuario|textil|uniforme") {
-                $products[$numericCode].subcategory = "T$([char]0x00EA)xtil" # Têxtil
-            }
-            elseif ($lowerFile -match "casa|cozinha|ferramenta|kit|vinho|churrasco") {
-                $products[$numericCode].subcategory = "Casa e Gourmet"
-            }
+        }
+        
+        # Simple Categorization based on filename keywords
+        $lowerFile = $file.ToLower()
+        if ($lowerFile -match "copo|caneca|garrafa|squeeze|jarra|termica|cantil|taca|xicara") {
+            $products[$numericCode].subcategory = "Bebidas"
+        }
+        elseif ($lowerFile -match "caneta|lapis|marcar|escrita|bloco|caderno|agenda|pasta") {
+            $products[$numericCode].subcategory = "Escrit$([char]0x00F3)rio" # Escritório
+        }
+        elseif ($lowerFile -match "mochila|bolsa|necessaire|sacola|mala|pochete") {
+            $products[$numericCode].subcategory = "Bolsas e Mochilas"
+        }
+        elseif ($lowerFile -match "chaveiro|cordao|botton|pin") {
+            $products[$numericCode].subcategory = "Chaveiros e Acess$([char]0x00F3)rios" # Acessórios
+        }
+        elseif ($lowerFile -match "tecno|usb|power|carregador|fone|mouse|som|caixa|inducao") {
+            $products[$numericCode].subcategory = "Tecnologia"
+        }
+        elseif ($lowerFile -match "bone|camisa|camiseta|vestuario|textil|uniforme") {
+            $products[$numericCode].subcategory = "T$([char]0x00EA)xtil" # Têxtil
+        }
+        elseif ($lowerFile -match "casa|cozinha|ferramenta|kit|vinho|churrasco") {
+            $products[$numericCode].subcategory = "Casa e Gourmet"
+        }
+        elseif ($lowerFile -match "lanterna|luminaria|led") {
+            $products[$numericCode].subcategory = "Lanternas e Lumin$([char]0x00E1)rias" # Lanternas e Luminárias
         }
     }
 }
