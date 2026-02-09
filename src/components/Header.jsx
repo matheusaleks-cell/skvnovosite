@@ -26,10 +26,10 @@ const Header = () => {
         { name: 'Confecção', path: '/confeccao' },
     ];
 
-    const currentPath = location.pathname;
+    const isHome = currentPath === '/';
 
     return (
-        <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
+        <header className={`header ${isScrolled || !isHome ? 'scrolled' : ''}`}>
             <div className="header-container">
                 <div className="logo">
                     <Link to="/">
